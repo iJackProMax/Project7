@@ -84,7 +84,10 @@ class ViewController: UITableViewController {
         ac.addAction(cancelAction)
         let submitAction = UIAlertAction(title: "Submit", style: .default) { [weak self, weak ac] _ in
             guard let filter = ac?.textFields?[0].text else { return }
-            self?.submitFilter(filter)
+            DispatchQueue.global(qos: .userInitiated).async {
+                self?.submitFilter(filter)
+            }
+            
         }
         ac.addAction(submitAction)
         present(ac, animated: true)
@@ -97,9 +100,14 @@ class ViewController: UITableViewController {
                 filteredPetitions.append(petition)
             } else if filter == "" {
                 filteredPetitions = petitions
-                tableView.reloadData()
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
-            tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            
         }
     }
 }
